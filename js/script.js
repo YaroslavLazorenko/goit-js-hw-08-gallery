@@ -45,16 +45,20 @@ function onGalleryNavClick(evt) {
 
 function openModal(imageURL, imageAltAttrValue) {
   modalBoxElem.classList.add('is-open');
-  modalImageElem.setAttribute('src', imageURL);
-  modalImageElem.setAttribute('alt', imageAltAttrValue);
+  setModalImageAttributes(imageURL, imageAltAttrValue);
 
   closeModalBtnElem.addEventListener('click', closeModal);
   modalBackdropElem.addEventListener('click', closeModal);
   window.addEventListener('keydown', onKeyboardBtnClick);
 
+  function setModalImageAttributes(srcAttrValue = '', altAttrValue = '') {
+    modalImageElem.setAttribute('src', srcAttrValue);
+    modalImageElem.setAttribute('alt', altAttrValue);
+  }
+
   function closeModal() {
     modalBoxElem.classList.remove('is-open');
-    modalImageElem.setAttribute('src', '');
+    setModalImageAttributes();
 
     closeModalBtnElem.removeEventListener('click', closeModal);
     modalBackdropElem.removeEventListener('click', closeModal);
@@ -71,23 +75,16 @@ function openModal(imageURL, imageAltAttrValue) {
 
     if (isEscBtnPressed) closeModal();
 
-    if (isLeftBtnPressed) {
-      if (currentGalleryItemIndex > 0) {
-        const newGalleryItemIndex = currentGalleryItemIndex - 1;
-        imageURL = updateImageAttributesAndImageURL(newGalleryItemIndex);
-      }
+    if (isLeftBtnPressed && currentGalleryItemIndex > 0) {
+      imageURL = updateImageAttributesAndImageURL(currentGalleryItemIndex - 1);
     }
 
-    if (isRightBtnPressed) {
-      if (currentGalleryItemIndex < galleryItems.length - 1) {
-        const newGalleryItemIndex = currentGalleryItemIndex + 1;
-        imageURL = updateImageAttributesAndImageURL(newGalleryItemIndex);
-      }
+    if (isRightBtnPressed && currentGalleryItemIndex < galleryItems.length - 1) {
+      imageURL = updateImageAttributesAndImageURL(currentGalleryItemIndex + 1);
     }
 
     function updateImageAttributesAndImageURL(itemIndex) {
-      modalImageElem.setAttribute('src', galleryItems[itemIndex].original);
-      modalImageElem.setAttribute('alt', galleryItems[itemIndex].description);
+      setModalImageAttributes(galleryItems[itemIndex].original, galleryItems[itemIndex].description);
       return galleryItems[itemIndex].original;
     }
   }
